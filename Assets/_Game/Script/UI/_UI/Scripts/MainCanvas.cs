@@ -14,7 +14,6 @@ public class MainCanvas : UICanvas
     [SerializeField] private TextEffect txtEff;
     private Coroutine bloodyCoroutine;
 
-    private float elapsedTime = 0f;
 
     private void OnEnable()
     {

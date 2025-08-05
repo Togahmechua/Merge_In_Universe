@@ -45,7 +45,7 @@ public class PauseCanvas : UICanvas
             UIManager.Ins.TransitionUI<ChangeUICanvas, PauseCanvas>(0.6f,
                 () =>
                 {
-                    //LevelManager.Ins.DespawnMap();
+                    LevelManager.Ins.DespawnLevel();
                     UIManager.Ins.OpenUI<StartCanvas>();
                 });
         });
@@ -57,8 +57,9 @@ public class PauseCanvas : UICanvas
             UIManager.Ins.TransitionUI<ChangeUICanvas, PauseCanvas>(0.6f,
                () =>
                {
+                   LevelManager.Ins.DespawnLevel();
                    UIManager.Ins.OpenUI<MainCanvas>();
-                   //LevelManager.Ins.LoadMapByID(LevelManager.Ins.curMapID);
+                   LevelManager.Ins.SpawnLevel();
                });
         });
 

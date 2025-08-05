@@ -146,17 +146,17 @@ public enum ParticleType
 public enum PoolType
 {
     None,
-    Bee,
-    Level1,
-    Level2,
-    Level3,
-    Level4,
-    Level5,
-    Level6,
-    Level7,
-    Level8,
-    Level9,
-    Level10
+    Mercury,
+    Venus,
+    Earth,
+    Mars,
+    Jupiter,
+    Saturn,
+    Uranus,
+    Neptune,
+    Sun,
+    BlackHole,
+    Nothing
 }
 
 
