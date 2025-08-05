@@ -20,7 +20,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         if (curLevel != null)
         {
-            //SimplePool.CollectAll();
+            SimplePool.CollectAll();
             Destroy(curLevel.gameObject);
         }
     }

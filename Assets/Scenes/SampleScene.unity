@@ -313,6 +313,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 986418203}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &566677059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 566677060}
+  m_Layer: 0
+  m_Name: Par
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &566677060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566677059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 986418203}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &586342570
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,14 +552,11 @@ MonoBehaviour:
   musicSource: {fileID: 206333229}
   sfxSource: {fileID: 586342572}
   masterMixer: {fileID: 24100000, guid: 78223d573bfbe9341a9dbfac6ae1e522, type: 2}
-  backgroundClip: {fileID: 0}
-  click: {fileID: 0}
-  loose: {fileID: 0}
-  coin: {fileID: 0}
-  hurt: {fileID: 0}
-  dead: {fileID: 0}
-  horn: {fileID: 0}
-  drift: {fileID: 0}
+  backgroundClip: {fileID: 8300000, guid: eb4ea82a53bce724d894138a44806ade, type: 3}
+  click: {fileID: 8300000, guid: 7ca6bb73fb513f54bba373cc6941b232, type: 3}
+  loose: {fileID: 8300000, guid: a241b00f32676d84281cef6e82c5bd84, type: 3}
+  win: {fileID: 8300000, guid: d88042b7585117045a7b6b87931ab276, type: 3}
+  merge: {fileID: 8300000, guid: 89df57be140c8a2438f237b67ec5c0bf, type: 3}
 --- !u!1 &849456041
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,6 +601,7 @@ GameObject:
   - component: {fileID: 961845237}
   - component: {fileID: 961845240}
   - component: {fileID: 961845241}
+  - component: {fileID: 961845242}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -623,7 +652,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6.1107955
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -686,6 +715,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
+--- !u!114 &961845242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961845236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab8353b5ebd32545867da143199a814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultPosInfluence: {x: 0.15, y: 0.15, z: 0.15}
+  DefaultRotInfluence: {x: 1, y: 1, z: 1}
+  RestPositionOffset: {x: 0, y: 0, z: -10}
+  RestRotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &986418202
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,6 +771,7 @@ Transform:
   - {fileID: 295882029}
   - {fileID: 1204069271}
   - {fileID: 1483235145}
+  - {fileID: 566677060}
   m_Father: {fileID: 1132489957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &986418204
@@ -781,7 +827,11 @@ MonoBehaviour:
     prefab: {fileID: 6994649080751140039, guid: 7d0ca81aedb81014c81ef967ef372573, type: 3}
     amount: 3
     collect: 1
-  Particle: []
+  Particle:
+  - root: {fileID: 566677060}
+    particleType: 1
+    prefab: {fileID: 19851920, guid: b6eb22b3c4c0fe143a203ae3326eaf0e, type: 3}
+    amount: 5
 --- !u!1 &1132489956
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,7 +1149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22713168f5c91e94f8bfbe2d2470702b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: {fileID: 6908992576650142095, guid: 029279a47ea546546998b099ce3ea64c, type: 3}
+  level: {fileID: 253851539730976594, guid: 029279a47ea546546998b099ce3ea64c, type: 3}
   curLevel: {fileID: 0}
 --- !u!1 &1713909533
 GameObject:

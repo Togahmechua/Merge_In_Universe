@@ -10,8 +10,6 @@ public class MainCanvas : UICanvas
     [SerializeField] private Button pauseBtn;
 
     [SerializeField] private GameObject bloodyScreen;
-    [SerializeField] private TextMeshProUGUI pointTxt;
-    [SerializeField] private TextEffect txtEff;
     private Coroutine bloodyCoroutine;
 
 
@@ -24,7 +22,7 @@ public class MainCanvas : UICanvas
     {
         pauseBtn.onClick.AddListener(() =>
         {
-            //AudioManager.Ins.PlaySFX(AudioManager.Ins.click);
+            AudioManager.Ins.PlaySFX(AudioManager.Ins.click);
             UIManager.Ins.OpenUI<PauseCanvas>();
             UIManager.Ins.CloseUI<MainCanvas>();
         });

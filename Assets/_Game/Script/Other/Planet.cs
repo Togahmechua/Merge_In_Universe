@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using EZCameraShake;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,9 +10,34 @@ public class Planet : GameUnit
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float dragSpeed = 0.01f; // điều chỉnh tốc độ kéo
 
+    public bool HasLanded { get; private set; }
+
     private bool isDragging;
     private bool isAbleToDrag = true;
     private Vector3 lastWorldTouchPos;
+    private Coroutine loseCheckCoroutine;
+
+    public static event Action<Planet> OnPlanetMerged;
+
+    private void OnEnable()
+    {
+        Init(false);
+    }
+
+    private void OnDisable()
+    {
+        HasLanded = false;
+    }
+
+    public void Init(bool immediateDrop = false)
+    {
+        HasLanded = false;
+        isDragging = false;
+        isAbleToDrag = !immediateDrop;
+        rb.gravityScale = immediateDrop ? 1f : 0f;
+    }
+
+
 
     #region Drag
     private void Update()
@@ -59,7 +86,7 @@ public class Planet : GameUnit
     #endregion
 
     #region Merge
-   /* private void MergeIfSameType(Planet other)
+    private void MergeIfSameType(Planet other)
     {
         if (other.poolType == this.poolType)
         {
@@ -67,42 +94,91 @@ public class Planet : GameUnit
             {
                 Vector3 spawnPos = (this.transform.position + other.transform.position) / 2f;
 
-                // Despawn hai object hiện tại
                 SimplePool.Despawn(this);
                 SimplePool.Despawn(other);
 
-                // Nếu merge ra BlackHole thì không spawn gì thêm
-                if (nextType == PoolType.BlackHole)
+                if (nextType == PoolType.Nothing)
                 {
-                    // (Tuỳ chọn) Hiệu ứng hoặc âm thanh
-                    
+                    //Play Particle
+                    UIManager.Ins.TransitionUI<ChangeUICanvas, MainCanvas>(0.5f,
+                       () =>
+                       {
+                           LevelManager.Ins.DespawnLevel();
+                           UIManager.Ins.OpenUI<WinCanvas>();
+                       });
                     return;
                 }
 
-                // Nếu kết quả là Nothing (không còn loại mới), cũng không spawn
-                if (nextType == PoolType.None || nextType == PoolType.Nothing)
-                    return;
+                Planet merged = SimplePool.Spawn<Planet>(nextType, spawnPos, Quaternion.identity);
+                ParticlePool.Play(ParticleType.MergeEff, spawnPos, Quaternion.identity);
+                AudioManager.Ins.PlaySFX(AudioManager.Ins.merge);
+                merged.Init(true);
 
-                // Spawn planet mới
-                GameUnit prefab = PoolHelper.GetPrefab(nextType);
-                if (prefab != null)
-                {
-                    GameUnit newUnit = SimplePool.Spawn(prefab, spawnPos, Quaternion.identity) as GameUnit;
-                    newUnit.poolType = nextType;
-                }
+                CameraShaker.Instance.ShakeOnce(2f, 2f, 0.1f, 1f);
+
+                OnPlanetMerged?.Invoke(merged); // GỬI thằng mới
             }
         }
-    }*/
+    }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Planet planet = Cache.GetPlanet(collision.gameObject);
-        if (planet != null)
+        if (other.CompareTag("Loose"))
         {
-
+            if (loseCheckCoroutine == null)
+            {
+                loseCheckCoroutine = StartCoroutine(CheckLoseAfterDelay(other));
+            }
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Loose"))
+        {
+            // Nếu rời khỏi vạch thua trước 1 giây thì huỷ kiểm tra
+            if (loseCheckCoroutine != null)
+            {
+                StopCoroutine(loseCheckCoroutine);
+                loseCheckCoroutine = null;
+            }
+        }
+    }
+
+    private IEnumerator CheckLoseAfterDelay(Collider2D other)
+    {
+        yield return new WaitForSeconds(1f);
+
+        // Kiểm tra xem vẫn còn chạm vạch thua không
+        if (other != null && other.IsTouching(GetComponent<Collider2D>()))
+        {
+            Debug.Log("Thua vì chạm vạch thua hơn 1 giây!");
+
+            UIManager.Ins.TransitionUI<ChangeUICanvas, MainCanvas>(0.5f,
+                () =>
+                {
+                    LevelManager.Ins.DespawnLevel();
+                    UIManager.Ins.OpenUI<LooseCanvas>();
+                });
+        }
+
+        loseCheckCoroutine = null;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            HasLanded = true;
+        }
+
+        Planet planet = Cache.GetPlanet(other.gameObject);
+        if (planet != null && this.GetInstanceID() > planet.GetInstanceID())
+        {
+            MergeIfSameType(planet);
+        }
+    }
+
     #endregion
 }
 
